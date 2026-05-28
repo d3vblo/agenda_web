@@ -21,95 +21,38 @@
 
         body {
             font-family: 'Source Sans 3', sans-serif;
-            background: var(--blanco);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-        }
-
-        /* ── HEADER ── */
-        header {
-            background: var(--vino-dark);
-            padding: 0 32px;
-            display: flex;
             align-items: center;
-            justify-content: space-between;
-            height: 64px;
-            border-bottom: 4px solid var(--dorado);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .escudo {
-            width: 40px;
-            height: 40px;
-            background: var(--arena);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .header-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            color: var(--arena);
-            letter-spacing: 0.02em;
-            line-height: 1.1;
-        }
-
-        .header-sub {
-            font-size: 11px;
-            color: rgba(222,201,162,0.6);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        .header-badge {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--vino-dark);
-            background: var(--dorado);
-            padding: 4px 10px;
-            border-radius: 20px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-        }
-
-        /* ── BANDA DECORATIVA ── */
-        .banda {
-            height: 6px;
-            background: linear-gradient(90deg,
-                var(--vino) 0%,
-                var(--dorado) 33%,
-                var(--verde) 66%,
-                var(--morado) 100%
-            );
-        }
-
-        /* ── MAIN ── */
-        main {
-            flex: 1;
-            display: flex;
-            align-items: flex-start;
             justify-content: center;
             padding: 40px 20px;
+
+            /* Fondo escritorio */
+            background-image: url('/static/fondo.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Fondo móvil */
+        @media (max-width: 600px) {
+            body {
+                background-image: url('/static/fondo_movil.png');
+                background-attachment: scroll;
+            }
         }
 
         .card {
             width: 100%;
-            max-width: 640px;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 24px rgba(164,33,69,0.08), 0 0 0 1px rgba(164,33,69,0.06);
+            max-width: 600px;
+            background: rgba(255,255,255,0.93);
+            backdrop-filter: blur(8px);
+            border-radius: 6px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.25);
             overflow: hidden;
+            border-top: 5px solid var(--vino);
         }
 
         .card-header {
@@ -143,6 +86,17 @@
             font-size: 12px;
             color: rgba(222,201,162,0.7);
             margin-top: 2px;
+        }
+
+        /* BANDA DECORATIVA */
+        .banda {
+            height: 4px;
+            background: linear-gradient(90deg,
+                var(--vino) 0%,
+                var(--dorado) 33%,
+                var(--verde) 66%,
+                var(--morado) 100%
+            );
         }
 
         .card-body {
@@ -222,7 +176,6 @@
             font-family: 'Source Sans 3', sans-serif;
             cursor: pointer;
             transition: all 0.2s;
-            letter-spacing: 0.02em;
         }
 
         .btn-limpiar:hover {
@@ -230,7 +183,6 @@
             background: #f5f0ea;
         }
 
-        /* ── STATUS ── */
         .status {
             margin-top: 18px;
             padding: 14px 16px;
@@ -261,26 +213,18 @@
             border-left: 4px solid var(--dorado);
         }
 
-        /* ── DIVIDER ── */
-        .divider {
-            height: 1px;
-            background: linear-gradient(90deg, var(--arena), transparent);
-            margin: 0 28px;
-        }
-
-        /* ── FOOTER ── */
         footer {
-            text-align: center;
-            padding: 20px;
+            margin-top: 16px;
             font-size: 11px;
-            color: #aaa;
-            letter-spacing: 0.04em;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.06em;
             text-transform: uppercase;
+            text-align: center;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
         }
 
         @media (max-width: 480px) {
-            header { padding: 0 16px; }
-            .header-badge { display: none; }
+            body { padding: 24px 16px; }
             .card-body { padding: 20px 16px; }
             .acciones { flex-direction: column; }
             .btn-limpiar { width: 100%; }
@@ -289,49 +233,32 @@
 </head>
 <body>
 
-    <header>
-        <div class="header-left">
-            <div class="escudo">🏛️</div>
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon">📋</div>
             <div>
-                <div class="header-title">SEDATU</div>
-                <div class="header-sub">Registro de Actividades</div>
+                <h2>Carga de Agenda Diaria</h2>
+                <p>Pega el texto de WhatsApp y sube a Google Sheets</p>
             </div>
         </div>
-        <div class="header-badge">Sistema Interno</div>
-    </header>
+        <div class="banda"></div>
+        <div class="card-body">
+            <label for="texto">Texto de la agenda</label>
+            <textarea
+                id="texto"
+                placeholder="Pega aquí el texto de la agenda enviada por WhatsApp..."
+            ></textarea>
 
-    <div class="banda"></div>
-
-    <main>
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon">📋</div>
-                <div>
-                    <h2>Carga de Agenda Diaria</h2>
-                    <p>Pega el texto de WhatsApp y sube a Google Sheets</p>
-                </div>
+            <div class="acciones">
+                <button class="btn-subir" onclick="procesar()">
+                    ⬆️ Subir a Google Sheets
+                </button>
+                <button class="btn-limpiar" onclick="limpiar()">Limpiar</button>
             </div>
 
-            <div class="divider"></div>
-
-            <div class="card-body">
-                <label for="texto">Texto de la agenda</label>
-                <textarea
-                    id="texto"
-                    placeholder="Pega aquí el texto de la agenda enviada por WhatsApp..."
-                ></textarea>
-
-                <div class="acciones">
-                    <button class="btn-subir" onclick="procesar()">
-                        ⬆️ Subir a Google Sheets
-                    </button>
-                    <button class="btn-limpiar" onclick="limpiar()">Limpiar</button>
-                </div>
-
-                <div class="status" id="status"></div>
-            </div>
+            <div class="status" id="status"></div>
         </div>
-    </main>
+    </div>
 
     <footer>SEDATU &nbsp;·&nbsp; Uso exclusivo interno &nbsp;·&nbsp; Trenes del Bienestar</footer>
 
