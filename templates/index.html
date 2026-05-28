@@ -4,183 +4,345 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda Diaria</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --vino:       #a42145;
+            --vino-dark:  #6E152E;
+            --arena:      #dec9a2;
+            --verde:      #245C4F;
+            --dorado:     #BC945A;
+            --carbon:     #404040;
+            --morado:     #691B4F;
+            --blanco:     #faf8f5;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f0f2f5;
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--blanco);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--vino-dark);
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            border-bottom: 4px solid var(--dorado);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .escudo {
+            width: 40px;
+            height: 40px;
+            background: var(--arena);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--arena);
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+        }
+
+        .header-sub {
+            font-size: 11px;
+            color: rgba(222,201,162,0.6);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .header-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--vino-dark);
+            background: var(--dorado);
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* ── BANDA DECORATIVA ── */
+        .banda {
+            height: 6px;
+            background: linear-gradient(90deg,
+                var(--vino) 0%,
+                var(--dorado) 33%,
+                var(--verde) 66%,
+                var(--morado) 100%
+            );
+        }
+
+        /* ── MAIN ── */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 20px;
         }
 
         .card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
             width: 100%;
-            max-width: 600px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            max-width: 640px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 24px rgba(164,33,69,0.08), 0 0 0 1px rgba(164,33,69,0.06);
+            overflow: hidden;
         }
 
-        .logo {
+        .card-header {
+            background: var(--vino);
+            padding: 20px 28px;
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 24px;
         }
 
-        .logo-icon {
-            width: 44px;
-            height: 44px;
-            background: #1a73e8;
-            border-radius: 12px;
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 22px;
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
-        .logo h1 {
-            font-size: 20px;
+        .card-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 17px;
+            color: var(--arena);
             font-weight: 700;
-            color: #1a1a1a;
         }
 
-        .logo p {
-            font-size: 13px;
-            color: #666;
+        .card-header p {
+            font-size: 12px;
+            color: rgba(222,201,162,0.7);
+            margin-top: 2px;
+        }
+
+        .card-body {
+            padding: 28px;
         }
 
         label {
             display: block;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
+            color: var(--carbon);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
 
         textarea {
             width: 100%;
-            height: 280px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 14px;
+            height: 260px;
+            border: 1.5px solid #e8e0d5;
+            border-radius: 4px;
+            padding: 14px 16px;
             font-size: 14px;
-            font-family: inherit;
+            font-family: 'Source Sans 3', sans-serif;
             resize: vertical;
             outline: none;
-            transition: border-color 0.2s;
-            color: #333;
-            line-height: 1.6;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            color: var(--carbon);
+            line-height: 1.7;
+            background: #fdfbf8;
         }
 
         textarea:focus {
-            border-color: #1a73e8;
+            border-color: var(--vino);
+            box-shadow: 0 0 0 3px rgba(164,33,69,0.08);
+            background: white;
         }
 
-        textarea::placeholder {
-            color: #aaa;
+        textarea::placeholder { color: #bbb; }
+
+        .acciones {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
         }
 
-        .btn {
-            width: 100%;
-            margin-top: 16px;
-            padding: 14px;
-            background: #1a73e8;
+        .btn-subir {
+            flex: 1;
+            padding: 13px;
+            background: var(--vino);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-
-        .btn:hover { background: #1557b0; }
-        .btn:active { transform: scale(0.98); }
-        .btn:disabled { background: #aaa; cursor: not-allowed; }
-
-        .status {
-            margin-top: 16px;
-            padding: 14px 16px;
-            border-radius: 10px;
+            border-radius: 4px;
             font-size: 14px;
-            font-weight: 500;
-            display: none;
+            font-weight: 600;
+            font-family: 'Source Sans 3', sans-serif;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: background 0.2s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .status.success {
-            background: #e6f4ea;
-            color: #1e7e34;
-            border: 1px solid #b7dfbe;
-        }
-
-        .status.error {
-            background: #fce8e6;
-            color: #c5221f;
-            border: 1px solid #f5c6c5;
-        }
-
-        .status.loading {
-            background: #e8f0fe;
-            color: #1a73e8;
-            border: 1px solid #c5d8fd;
-        }
+        .btn-subir:hover { background: var(--vino-dark); }
+        .btn-subir:active { transform: scale(0.98); }
+        .btn-subir:disabled { background: #bbb; cursor: not-allowed; }
 
         .btn-limpiar {
-            width: 100%;
-            margin-top: 10px;
-            padding: 10px;
+            padding: 13px 18px;
             background: transparent;
-            color: #666;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 10px;
+            color: var(--carbon);
+            border: 1.5px solid #ddd;
+            border-radius: 4px;
             font-size: 14px;
+            font-family: 'Source Sans 3', sans-serif;
             cursor: pointer;
             transition: all 0.2s;
+            letter-spacing: 0.02em;
         }
 
         .btn-limpiar:hover {
-            border-color: #aaa;
-            color: #333;
+            border-color: var(--carbon);
+            background: #f5f0ea;
+        }
+
+        /* ── STATUS ── */
+        .status {
+            margin-top: 18px;
+            padding: 14px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .status.success {
+            background: #edf5f0;
+            color: var(--verde);
+            border-left: 4px solid var(--verde);
+        }
+
+        .status.error {
+            background: #fdf0f3;
+            color: var(--vino);
+            border-left: 4px solid var(--vino);
+        }
+
+        .status.loading {
+            background: #f5f0ea;
+            color: var(--dorado);
+            border-left: 4px solid var(--dorado);
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, var(--arena), transparent);
+            margin: 0 28px;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            color: #aaa;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 480px) {
+            header { padding: 0 16px; }
+            .header-badge { display: none; }
+            .card-body { padding: 20px 16px; }
+            .acciones { flex-direction: column; }
+            .btn-limpiar { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="logo">
-            <div class="logo-icon">📋</div>
+
+    <header>
+        <div class="header-left">
+            <div class="escudo">🏛️</div>
             <div>
-                <h1>Agenda Diaria</h1>
-                <p>Pega la agenda y súbela a Google Sheets</p>
+                <div class="header-title">SEDATU</div>
+                <div class="header-sub">Registro de Actividades</div>
             </div>
         </div>
+        <div class="header-badge">Sistema Interno</div>
+    </header>
 
-        <label for="texto">Texto de la agenda</label>
-        <textarea
-            id="texto"
-            placeholder="Pega aquí el texto de la agenda enviado por WhatsApp..."
-        ></textarea>
+    <div class="banda"></div>
 
-        <button class="btn" onclick="procesar()">⬆️ Subir a Google Sheets</button>
-        <button class="btn-limpiar" onclick="limpiar()">Limpiar</button>
+    <main>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon">📋</div>
+                <div>
+                    <h2>Carga de Agenda Diaria</h2>
+                    <p>Pega el texto de WhatsApp y sube a Google Sheets</p>
+                </div>
+            </div>
 
-        <div class="status" id="status"></div>
-    </div>
+            <div class="divider"></div>
+
+            <div class="card-body">
+                <label for="texto">Texto de la agenda</label>
+                <textarea
+                    id="texto"
+                    placeholder="Pega aquí el texto de la agenda enviada por WhatsApp..."
+                ></textarea>
+
+                <div class="acciones">
+                    <button class="btn-subir" onclick="procesar()">
+                        ⬆️ Subir a Google Sheets
+                    </button>
+                    <button class="btn-limpiar" onclick="limpiar()">Limpiar</button>
+                </div>
+
+                <div class="status" id="status"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>SEDATU &nbsp;·&nbsp; Uso exclusivo interno &nbsp;·&nbsp; Trenes del Bienestar</footer>
 
     <script>
         async function procesar() {
             const texto = document.getElementById('texto').value.trim();
             const status = document.getElementById('status');
-            const btn = document.querySelector('.btn');
+            const btn = document.querySelector('.btn-subir');
 
             if (!texto) {
-                mostrarStatus('Por favor pega el texto de la agenda.', 'error');
+                mostrarStatus('⚠️ Por favor pega el texto de la agenda.', 'error');
                 return;
             }
 
@@ -197,7 +359,10 @@
                 const data = await res.json();
 
                 if (data.success) {
-                    mostrarStatus(`✅ ${data.total} registro${data.total !== 1 ? 's' : ''} agregado${data.total !== 1 ? 's' : ''} correctamente a Google Sheets.`, 'success');
+                    mostrarStatus(
+                        `✅ ${data.total} registro${data.total !== 1 ? 's' : ''} agregado${data.total !== 1 ? 's' : ''} correctamente a Google Sheets.`,
+                        'success'
+                    );
                     document.getElementById('texto').value = '';
                 } else {
                     mostrarStatus(`❌ Error: ${data.error}`, 'error');
@@ -218,8 +383,9 @@
             const status = document.getElementById('status');
             status.textContent = msg;
             status.className = `status ${tipo}`;
-            status.style.display = 'block';
+            status.style.display = 'flex';
         }
     </script>
+
 </body>
 </html>
