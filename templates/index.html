@@ -47,8 +47,8 @@
         .card {
             width: 100%;
             max-width: 600px;
-            background: rgba(255,255,255,0.93);
-            backdrop-filter: blur(8px);
+            background: rgba(180,180,180,0.45);
+            backdrop-filter: blur(12px);
             border-radius: 6px;
             box-shadow: 0 8px 40px rgba(0,0,0,0.25);
             overflow: hidden;
@@ -213,16 +213,6 @@
             border-left: 4px solid var(--dorado);
         }
 
-        footer {
-            margin-top: 16px;
-            font-size: 11px;
-            color: rgba(255,255,255,0.6);
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            text-align: center;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-        }
-
         @media (max-width: 480px) {
             body { padding: 24px 16px; }
             .card-body { padding: 20px 16px; }
@@ -237,8 +227,8 @@
         <div class="card-header">
             <div class="card-icon">📋</div>
             <div>
-                <h2>Carga de Agenda Diaria</h2>
-                <p>Pega el texto de WhatsApp y sube a Google Sheets</p>
+                <h2>Agenda Diaria</h2>
+                <p>Sistema web para actualización de la agenda diaria integrando la información en tiempo real a Google Sheets.</p>
             </div>
         </div>
         <div class="banda"></div>
@@ -246,12 +236,12 @@
             <label for="texto">Texto de la agenda</label>
             <textarea
                 id="texto"
-                placeholder="Pega aquí el texto de la agenda enviada por WhatsApp..."
+                placeholder="Copie y pegue aquí el texto de la agenda enviada por WhatsApp..."
             ></textarea>
 
             <div class="acciones">
                 <button class="btn-subir" onclick="procesar()">
-                    ⬆️ Subir a Google Sheets
+                    Subir actividades
                 </button>
                 <button class="btn-limpiar" onclick="limpiar()">Limpiar</button>
             </div>
@@ -260,7 +250,7 @@
         </div>
     </div>
 
-    <footer>SEDATU &nbsp;·&nbsp; Uso exclusivo interno &nbsp;·&nbsp; Trenes del Bienestar</footer>
+
 
     <script>
         async function procesar() {
@@ -269,12 +259,12 @@
             const btn = document.querySelector('.btn-subir');
 
             if (!texto) {
-                mostrarStatus('⚠️ Por favor pega el texto de la agenda.', 'error');
+                mostrarStatus('Por favor pega el texto de la agenda.', 'error');
                 return;
             }
 
             btn.disabled = true;
-            mostrarStatus('⏳ Procesando agenda...', 'loading');
+            mostrarStatus('Procesando agenda...', 'loading');
 
             try {
                 const res = await fetch('/procesar', {
