@@ -30,7 +30,7 @@
 
             /* Fondo escritorio */
             background-image: url('/static/fondo.png');
-            background-size: 95%;
+            background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -220,7 +220,7 @@
     <div class="card">
         <div class="card-header">
             <div>
-                <h2>Sistema web para actualización de la agenda diaria integrando la información en tiempo real a Google Sheets</h2>
+                <h2>Sistema web para actualizar la agenda diaria con sincronización en tiempo real en Google Sheets</h2>
             </div>
         </div>
         <div class="banda"></div>
@@ -240,6 +240,9 @@
 
             <div class="status" id="status"></div>
         </div>
+    </div>
+    <div style="text-align: center; padding: 20px 0 30px;">
+        <img src="/static/footer.png" style="max-width: 200px; width: 80%;">
     </div>
 
 
@@ -294,6 +297,7 @@
             status.className = `status ${tipo}`;
             status.style.display = 'flex';
         }
+
     </script>
 
 </body>
