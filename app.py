@@ -108,8 +108,9 @@ def procesar_agenda(texto):
 
         # UBICACIÓN
         ubicacion = re.search(
-            r"(?:Ubicaci[oó]n|Punto de reuni[oó]n):\s*[\n\r]*\s*(?:\[.*?\]\((https?://[^\)\s]+)\)|(https?://\S+))",
-            bloque, re.IGNORECASE
+            r"(?:Ubicaci[oó]n|Punto de reuni[oó]n|Punto de encuentro):\s*[\n\r]*\s*(?:\[.*?\]\((https?://[^\)\s]+)\)|(https?://\S+))",
+            bloque,
+            re.IGNORECASE
         )
         url = ""
         if ubicacion:
