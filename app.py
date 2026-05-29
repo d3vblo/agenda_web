@@ -108,13 +108,13 @@ def procesar_agenda(texto):
 
         # UBICACIÓN
         ubicacion = re.search(
-            r"(?:Ubicaci[oó]n|Punto de reuni[oó]n|Punto de encuentro):\s*[\n\r]*\s*(?:\[.*?\]\((https?://[^\)\s]+)\)|(https?://\S+))",
+            r"(?:Ubicaci[oó]n|Punto de reuni[oó]n|Punto de encuentro):\s*[\n\r]*\s*(?:\[.*?\]\((https?://[^\)\s]+)\)|(https?://[^\s\]]+)|(.+))",
             bloque,
             re.IGNORECASE
         )
         url = ""
         if ubicacion:
-            url = (ubicacion.group(1) or ubicacion.group(2) or "").strip()
+            url = (ubicacion.group(1) or ubicacion.group(2) or ubicacion.group(3) or "").strip()
 
         # BDTs
         bdts = re.search(r"BDTs?:\s*(.*)", bloque, re.IGNORECASE)
@@ -130,9 +130,26 @@ def procesar_agenda(texto):
 
         # NÚCLEO AGRARIO
         nucleo = re.search(r"Núcleo Agrario:\s*(.*)", bloque, re.IGNORECASE)
+        if not nucleo:
+            ejido_inline = re.search(
+                r'\bEjido\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñA-ZÁÉÍÓÚÑ\s]+?)(?:\)|,|\.|\n|$)',
+                linea_principal
+            )
+            if ejido_inline:
+                nucleo_txt = ejido_inline.group(1).strip()
+                nucleo = type('_', (), {'group': lambda self, n: nucleo_txt})()
 
         # PROPIETARIOS
         particular = re.search(r"Propietarios?:\s*(.*)|Particular:\s*(.*)", bloque, re.IGNORECASE)
+        if not particular:
+            propietario_inline = re.search(
+                r'\b(?:se[ñn]or[a]?|propietari[ao])\s+([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)+)',
+                linea_principal,
+                re.IGNORECASE
+            )
+            if propietario_inline:
+                prop_txt = propietario_inline.group(1).strip()
+                particular = type('_', (), {'group': lambda self, n: prop_txt if n in (1, 2) else ''})()
 
         # EJIDO
         ejido_match = re.search(r"Ejido:?\s*(.*)", bloque, re.IGNORECASE)
