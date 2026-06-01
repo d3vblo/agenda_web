@@ -91,7 +91,7 @@ def procesar_agenda(texto):
             actividad_detalle = re.sub(r'^[•\-]\s*', '', actividad_detalle).strip()
 
         # FRENTE
-        frente = re.search(r"(?:Frente|F):\s*(.*)", bloque, re.IGNORECASE)
+        frente = re.search(r"(?:^|\n)\s*(?:Frente|F):\s*(.*)", bloque, re.IGNORECASE)
 
         # POLÍGONO
         poligono = re.search(r"Pol[ií]gono:\s*(.*)", bloque, re.IGNORECASE)
@@ -119,10 +119,14 @@ def procesar_agenda(texto):
         # BDTs
         bdts = re.search(r"BDTs?:\s*(.*)", bloque, re.IGNORECASE)
 
-        # ACTIVIDADES DESARROLLADAS
+       # ACTIVIDADES DESARROLLADAS
+        bdts_val = bdts.group(1).strip() if bdts else ""
+        if bdts_val.upper() == "N/A":
+            bdts_val = ""
+
         partes = []
-        if bdts and bdts.group(1).strip():
-            partes.append(bdts.group(1).strip())
+        if bdts_val:
+            partes.append(bdts_val)
         partes.append(linea_principal)
         if actividad_detalle and actividad_detalle != linea_principal:
             partes.append(actividad_detalle)
@@ -165,9 +169,12 @@ def procesar_agenda(texto):
             "TIPO DE PROPIEDAD": "",
             "FRENTE": (
                 re.sub(r'\b(\d+)\b', r'F\1', frente.group(1).strip())
-                if frente else ""
+                if frente and frente.group(1).strip().upper() != "N/A" else ""
             ),
-            "POLÍGONO": (poligono.group(1).strip() if poligono else ""),
+            "POLÍGONO": (
+                poligono.group(1).strip()
+                if poligono and poligono.group(1).strip().upper() != "N/A" else ""
+            ),
             "ESTADO": "",
             "MUNICIPIO": municipio,
             "EJIDO": ejido,
