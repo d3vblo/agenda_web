@@ -12,11 +12,15 @@ app = Flask(__name__)
 # MAPA PROYECTOS
 # =========================
 mapa_proyectos = {
-    "TAP": "1. AIFA - PACHUCA",
-    "TMQ": "2. MÉXICO - QUERÉTARO",
-    "TQI": "3. QUERÉTARO - IRAPUATO",
-    "SNL": "4. SALTILLO - NUEVO LAREDO"
-}
+        'TAP':   'AIFA - PACHUCA',
+        'TIGDL': 'IRAPUATO - GUADALAJARA',
+        'TMLM':  'MAZATLÁN - LOS MOCHIS',
+        'TMQ':   'MÉXICO - QUERÉTARO',
+        'TQI':   'QUERÉTARO - IRAPUATO',
+        'TQSLP': 'QUERÉTARO - SAN LUIS POTOSÍ',
+        'TSNL':  'SALTILLO - NUEVO LAREDO',
+        'TSLPS': 'SAN LUIS POTOSÍ - SALTILLO',
+    }
 
 meses = {
     "enero": "01", "febrero": "02", "marzo": "03", "abril": "04",
