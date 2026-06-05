@@ -130,7 +130,10 @@ def procesar_agenda(texto):
             url = (ubicacion.group(1) or ubicacion.group(2) or ubicacion.group(3) or "").strip()
 
         # BDTs
-        bdts = re.search(r"BDTs?:\s*(.*)", bloque, re.IGNORECASE)
+        bdts = re.search(
+            r"BDTs?:\s*([^\n]+?)(?=\s+(?:F:|Pol[ií]gonos?:|Asistentes?:|Ubicaci[oó]n:|Ejido:|Municipio:|Parcelas:)|$)",
+            bloque, re.IGNORECASE
+        )
 
        # ACTIVIDADES DESARROLLADAS
         bdts_val = bdts.group(1).strip() if bdts else ""
