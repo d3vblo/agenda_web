@@ -80,6 +80,12 @@ def procesar_agenda(texto):
         else:
             linea_principal = bloque.splitlines()[0].strip()
 
+        # CAMBIO 1: cortar linea_principal antes del primer campo conocido
+        linea_principal = re.split(
+            r'\s+(?=(?:F:|BDTs?:|Pol[ií]gonos?:|Asistentes?:|Ubicaci[oó]n:|Ejido:|Municipio:|Hora:|Parcelas:))',
+            linea_principal, maxsplit=1, flags=re.IGNORECASE
+        )[0].strip()
+
         linea_principal = re.sub(r'^\d{1,2}:\d{2}\s*hrs?\.?\s*[-–—]\s*', '', linea_principal, flags=re.IGNORECASE).strip()
         linea_principal = re.sub(r'^[-–—\s]+', '', linea_principal).strip()
         linea_principal = re.sub(r'\.$', '', linea_principal).strip()
@@ -94,8 +100,11 @@ def procesar_agenda(texto):
             actividad_detalle = re.sub(r'\s*\n\s*[•\-]\s*', ' | ', actividad_raw)
             actividad_detalle = re.sub(r'^[•\-]\s*', '', actividad_detalle).strip()
 
-        # FRENTE
-        frente = re.search(r"(?<!\w)(?:Frente|F):\s*([^\n]+)", bloque, re.IGNORECASE)
+        # FRENTE — CAMBIO 2: lookahead para cortar antes del siguiente campo
+        frente = re.search(
+            r"(?<!\w)(?:Frente|F):\s*([^\n]+?)(?=\s+(?:BDTs?|Pol[ií]gonos?|Asistentes?|Ubicaci[oó]n|Ejido|Municipio|Parcelas):|$)",
+            bloque, re.IGNORECASE
+        )
 
         # POLÍGONO
         poligono = re.search(r"Pol[ií]gono:\s*(.*)", bloque, re.IGNORECASE)
@@ -104,9 +113,9 @@ def procesar_agenda(texto):
         municipio_match = re.search(r"Municipio:\s*(.*)", bloque, re.IGNORECASE)
         municipio = municipio_match.group(1).strip() if municipio_match else ""
 
-        # ASISTENTES
+        # ASISTENTES — CAMBIO 3: cortar antes de Ubicación
         asistentes = re.search(
-            r"(?:Asiste(?:n|ntes)?|Participa(?:n|ntes)?):\s*(.*)",
+            r"(?:Asiste(?:n|ntes)?|Participa(?:n|ntes)?):\s*([^\n]+?)(?=\s+(?:Ubicaci[oó]n|Punto de reuni[oó]n|Punto de encuentro|BDTs?|Pol[ií]gonos?|Ejido|Municipio|Parcelas):|$)",
             bloque, re.IGNORECASE
         )
 
