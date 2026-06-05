@@ -95,7 +95,7 @@ def procesar_agenda(texto):
             actividad_detalle = re.sub(r'^[•\-]\s*', '', actividad_detalle).strip()
 
         # FRENTE
-        frente = re.search(r"(?:^|\n)\s*(?:Frente|F):\s*(.*)", bloque, re.IGNORECASE)
+        frente = re.search(r"(?<!\w)(?:Frente|F):\s*([^\n]+)", bloque, re.IGNORECASE)
 
         # POLÍGONO
         poligono = re.search(r"Pol[ií]gono:\s*(.*)", bloque, re.IGNORECASE)
