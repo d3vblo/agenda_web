@@ -148,6 +148,10 @@ def procesar_agenda(texto):
             partes.append(actividad_detalle)
         actividades_desarrolladas = " | ".join(partes) if partes else ""
 
+        # EJIDO
+        ejido_match = re.search(r"Ejido:?\s*(.*)", bloque, re.IGNORECASE)
+        ejido = ejido_match.group(1).strip() if ejido_match else ""
+
         # NÚCLEO AGRARIO
         nucleo = re.search(r"Núcleo Agrario:\s*(.*)", bloque, re.IGNORECASE)
         if not nucleo:
@@ -157,6 +161,10 @@ def procesar_agenda(texto):
             )
             if ejido_inline:
                 nucleo_txt = ejido_inline.group(1).strip()
+                nucleo = type('_', (), {'group': lambda self, n: nucleo_txt})()
+        if not nucleo and ejido_match:
+            nucleo_txt = ejido_match.group(1).strip()
+            if nucleo_txt:
                 nucleo = type('_', (), {'group': lambda self, n: nucleo_txt})()
 
         # PROPIETARIOS
@@ -171,9 +179,6 @@ def procesar_agenda(texto):
                 prop_txt = propietario_inline.group(1).strip()
                 particular = type('_', (), {'group': lambda self, n: prop_txt if n in (1, 2) else ''})()
 
-        # EJIDO
-        ejido_match = re.search(r"Ejido:?\s*(.*)", bloque, re.IGNORECASE)
-        ejido = ejido_match.group(1).strip() if ejido_match else ""
 
         fila = {
             "FECHA DE SOLICITUD": fecha_solicitud,
