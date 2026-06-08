@@ -12,13 +12,13 @@ app = Flask(__name__)
 # MAPA PROYECTOS
 # =========================
 mapa_proyectos = {
-        'TAP':   'AIFA - PACHUCA',
-        'TIGDL': 'IRAPUATO - GUADALAJARA',
-        'TMLM':  'MAZATLÁN - LOS MOCHIS',
-        'TMQ':   'MÉXICO - QUERÉTARO',
-        'TQI':   'QUERÉTARO - IRAPUATO',
-        'TQSLP': 'QUERÉTARO - SAN LUIS POTOSÍ',
-        'TSNL':  'SALTILLO - NUEVO LAREDO',
+        'TAP':   '1. AIFA - PACHUCA',
+        'TIGDL': '5. IRAPUATO - GUADALAJARA',
+        'TMLM':  '6. MAZATLÁN - LOS MOCHIS',
+        'TMQ':   '2. MÉXICO - QUERÉTARO',
+        'TQI':   '3. QUERÉTARO - IRAPUATO',
+        'TQSLP': '7. QUERÉTARO - SAN LUIS POTOSÍ',
+        'TSNL':  '4. SALTILLO - NUEVO LAREDO',
         'TSLPS': 'SAN LUIS POTOSÍ - SALTILLO',
     }
 
