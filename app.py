@@ -115,7 +115,7 @@ def procesar_agenda(texto):
 
         # ASISTENTES — CAMBIO 3: cortar antes de Ubicación
         asistentes = re.search(
-            r"(?:Asiste(?:n|ntes)?|Participa(?:n|ntes)?):\s*([^\n]+?)(?=\s+(?:Ubicaci[oó]n|Punto de reuni[oó]n|Punto de encuentro|BDTs?|Pol[ií]gonos?|Ejido|Municipio|Parcelas):|$)",
+            r"(?:Asistentes?|Asiste|Participa(?:n|ntes)?):\s*([^\n]+?)(?=\s+(?:Ubicaci[oó]n|Punto de reuni[oó]n|Punto de encuentro|BDTs?|Pol[ií]gonos?|Ejido|Municipio|Parcelas):|$)",
             bloque, re.IGNORECASE
         )
 
