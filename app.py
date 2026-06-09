@@ -113,7 +113,7 @@ def procesar_agenda(texto):
         municipio_match = re.search(r"Municipio:\s*(.*)", bloque, re.IGNORECASE)
         municipio = municipio_match.group(1).strip() if municipio_match else ""
 
-        # ASISTENTES — CAMBIO 3: cortar antes de Ubicación
+        # ASISTENTES
         asistentes = re.search(
             r"(?:Asistentes?|Asiste|Participa(?:n|ntes)?):\s*([^\n]+?)(?=\s+(?:Ubicaci[oó]n|Punto de reuni[oó]n|Punto de encuentro|BDTs?|Pol[ií]gonos?|Ejido|Municipio|Parcelas):|$)",
             bloque, re.IGNORECASE
