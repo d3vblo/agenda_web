@@ -100,9 +100,9 @@ def procesar_agenda(texto):
             actividad_detalle = re.sub(r'\s*\n\s*[•\-]\s*', ' | ', actividad_raw)
             actividad_detalle = re.sub(r'^[•\-]\s*', '', actividad_detalle).strip()
 
-        # FRENTE — CAMBIO 2: lookahead para cortar antes del siguiente campo
+        # FRENTE
         frente = re.search(
-            r"(?<!\w)(?:Frente|F):\s*([^\n]+?)(?=\s+(?:BDTs?|Pol[ií]gonos?|Asistentes?|Ubicaci[oó]n|Ejido|Municipio|Parcelas):|$)",
+            r"(?<!\w)(?:Frente|F):\s*([^\n]+?)(?=\s+(?:BDTs?|Pol[ií]gonos?|Asistentes?|Asiste|Ubicaci[oó]n|Ejido|Municipio|Parcelas):|[\r\n]|$)",
             bloque, re.IGNORECASE
         )
 
