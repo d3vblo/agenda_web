@@ -3,3 +3,5 @@ gspread
 google-auth
 requests
 gunicorn
+requests 
+shapely

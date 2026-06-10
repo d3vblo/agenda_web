@@ -5,6 +5,9 @@ import gspread
 from google.oauth2.service_account import Credentials
 import os
 import json
+import requests
+from shapely.geometry import shape, Point
+from shapely.strtree import STRtree
 
 app = Flask(__name__)
 
@@ -27,6 +30,85 @@ meses = {
     "mayo": "05", "junio": "06", "julio": "07", "agosto": "08",
     "septiembre": "09", "octubre": "10", "noviembre": "11", "diciembre": "12"
 }
+
+# CAPA MUNICIPAL INEGI (carga única al arrancar)
+def cargar_capas():
+    base = os.path.join(os.path.dirname(__file__), "data")
+    with open(os.path.join(base, "municipios_mx.geojson"), encoding="utf-8") as f:
+        mun_gj = json.load(f)
+
+    geoms = [shape(feat["geometry"]) for feat in mun_gj["features"]]
+    props = [feat["properties"] for feat in mun_gj["features"]]
+    return STRtree(geoms), geoms, props
+
+ARBOL_MUN, MUN_GEOMS, MUN_PROPS = cargar_capas()
+
+
+from urllib.parse import unquote
+
+def extraer_coordenadas(url_maps):
+    """Extrae lat, lng de un link de Google Maps (corto o expandido)"""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                      "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+    }
+
+    def buscar_coords(url):
+        # Decodificar URL-encoding (doble, por el parámetro continue= de Google)
+        url = unquote(unquote(url))
+        # 1. Pin real del lugar: !3d{lat}!4d{lng}
+        match = re.search(r'!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)', url)
+        if match:
+            return float(match.group(1)), float(match.group(2))
+        # 2. Formato ?q=lat,lng
+        match = re.search(r'[?&]q=(-?\d+\.\d+),\s*(-?\d+\.\d+)', url)
+        if match:
+            return float(match.group(1)), float(match.group(2))
+        # 3. Búsqueda por coordenadas: /maps/search/lat,+lng
+        match = re.search(r'/maps/search/(-?\d+\.\d+),\s*\+?(-?\d+\.\d+)', url)
+        if match:
+            return float(match.group(1)), float(match.group(2))
+        # 4. Links de ruta: destino como !1d{lng}!2d{lat}
+        if "/dir/" in url:
+            match = re.search(r'!1d(-?\d+\.\d+)!2d(-?\d+\.\d+)', url)
+            if match:
+                return float(match.group(2)), float(match.group(1))
+        # 5. Último recurso: @lat,lng (centro del encuadre, puede diferir del punto)
+        match = re.search(r'@(-?\d+\.\d+),(-?\d+\.\d+)', url)
+        if match:
+            return float(match.group(1)), float(match.group(2))
+        return None
+
+    # Intentar sobre la URL original (cubre maps.google.com/?q=...)
+    coords = buscar_coords(url_maps)
+    if coords:
+        return coords
+
+    # Expandir el link corto y buscar en la URL final (aunque sea /sorry/ de Google,
+    # las coordenadas suelen venir en el parámetro continue=)
+    try:
+        resp = requests.get(url_maps, allow_redirects=True, timeout=10, headers=headers)
+        coords = buscar_coords(resp.url)
+        if coords:
+            return coords
+    except requests.RequestException:
+        pass
+    return None, None
+
+
+def obtener_estado_municipio(lat, lng):
+    """Point-in-polygon contra capa municipal INEGI local"""
+    punto = Point(lng, lat)
+    for idx in ARBOL_MUN.query(punto):
+        if MUN_GEOMS[idx].contains(punto):
+            p = MUN_PROPS[idx]
+            return p["NOM_ENT"], p["NOM_MUN"]
+    # Fallback: punto en hueco de la simplificación → municipio más cercano (<~1 km)
+    idx = ARBOL_MUN.nearest(punto)
+    if idx is not None and MUN_GEOMS[idx].distance(punto) < 0.01:
+        p = MUN_PROPS[idx]
+        return p["NOM_ENT"], p["NOM_MUN"]
+    return "", ""
 
 def procesar_agenda(texto):
 
@@ -129,6 +211,13 @@ def procesar_agenda(texto):
         if ubicacion:
             url = (ubicacion.group(1) or ubicacion.group(2) or ubicacion.group(3) or "").strip()
 
+        estado_geo = ""
+        municipio_geo = ""
+        if url and ("goo.gl" in url or "google.com" in url):
+            lat, lng = extraer_coordenadas(url)
+            if lat is not None:
+                estado_geo, municipio_geo = obtener_estado_municipio(lat, lng)
+
         # BDTs
         bdts = re.search(
             r"BDTs?:\s*([^\n]+?)(?=\s+(?:F:|Pol[ií]gonos?:|Asistentes?:|Ubicaci[oó]n:|Ejido:|Municipio:|Parcelas:)|$)",
@@ -196,8 +285,8 @@ def procesar_agenda(texto):
                 poligono.group(1).strip()
                 if poligono and poligono.group(1).strip().upper() != "N/A" else ""
             ),
-            "ESTADO": "",
-            "MUNICIPIO": municipio,
+            "ESTADO": estado_geo.upper(),
+            "MUNICIPIO": municipio if municipio else municipio_geo,
             "EJIDO": ejido,
             "NÚCLEO AGRARIO": (nucleo.group(1).strip() if nucleo else ""),
             "PROPIETARIOS PROPIEDAD PRIVADA": (
@@ -268,7 +357,7 @@ def procesar():
         if not filas:
             return jsonify({"error": "No se encontraron actividades en el texto"}), 400
         total = subir_a_sheets(filas)
-        return jsonify({"success": True, "total": total})
+        return jsonify({"success": True, "filas": filas, "total": total})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
